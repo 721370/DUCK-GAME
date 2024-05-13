@@ -1,0 +1,75 @@
+
+import pygame
+
+#constraint
+LEFT = 0
+RIGHT = 1
+UP = 2
+DOWN = 3
+SPACE = 4
+W = 5
+
+class player:
+    def __init__(self):
+        
+        #player variables
+        self.xpos = 235
+        self.ypos = 115
+        self.vx = 0
+        self.vy = 0
+        self.direction = DOWN
+
+    def draw(self,screen):
+        pygame.draw.rect(screen, (255, 0, 255), (self.xpos, self.ypos, 30, 30))
+
+    def move(self, keys, map):
+        #left move
+        if keys[LEFT] == True:
+            self.direction = LEFT
+            self.vx = -3
+           # print("LEFT MOVEMENT")
+        #right move
+        elif keys[RIGHT] == True:
+            self.direction = RIGHT
+            self.vx = 3
+        #Turn off x velocity
+        else:
+            self.vx = 0
+
+        if keys[DOWN] == True:
+            self.direction = DOWN
+            self.vy = 3
+           # print("Down")
+
+        elif keys [UP] == True:
+            self.direction = UP
+            self.vy = -3
+           # print("up")
+
+        else:
+            self.vy = 0
+
+        
+        #left collision :D
+        if map[int((self.ypos) / 50)][int((self.xpos - 1) / 50)] == 2 or map[int((self.ypos) / 50)][int((self.xpos - 5) / 50)] == 1 or map[int((self.ypos) / 50)][int((self.xpos - 1) / 50)] == 3:
+            self.xpos+=3 #ypos update
+            
+        #right collision
+        if map[int((self.ypos) / 50)][int((self.xpos + 29) / 50)] == 2 or map[int((self.ypos) / 50)][int((self.xpos+29) / 50)] == 1 or map[int((self.ypos) / 50)][int((self.xpos+29) / 50)] == 3:
+            self.xpos-=3
+            print("right")
+        
+        #up collision :D
+        if map[int((self.ypos-2) / 50)][int((self.xpos) / 50)] == 2 or map[int((self.ypos-2) / 50)][int((self.xpos) / 50)] == 1 or map[int((self.ypos-2) / 50)][int((self.xpos) / 50)] == 3:
+            self.ypos+=3 #ypos update
+           # print("colliding up")
+
+
+        #down collision
+        if map[int((self.ypos+30) / 50)][int((self.xpos) / 50)] == 2 or map[int((self.ypos+30) / 50)][int((self.xpos) / 50)] == 1 or map[int((self.ypos+30) / 50)][int((self.xpos) / 50)] == 3:
+            self.ypos-=3
+           # print("colliding down")
+
+        
+        self.xpos+=self.vx #update player xpos
+        self.ypos+=self.vy #update player xpos
