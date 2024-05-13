@@ -1,0 +1,262 @@
+import pygame
+from player import player
+from fireball import fireball
+pygame.init()
+pygame.display.set_caption("Grid game math pain")#window
+screen = pygame.display.set_mode((1000, 1000))#SCREREEN
+clock = pygame.time.Clock()#clok
+gameover = False#Game loop variable
+
+p1 = player()
+p2 = player()
+f1 = fireball()
+#mouse input
+xpos = 0
+ypos = 0
+mousePos = (xpos, ypos)
+mouseDown = False
+
+#game state variable
+state = 1 #1 is menu, 2 is duck game 3 is extras
+
+button1 = False
+button2 = False
+#add more buttons here!
+quitGame = False
+
+#constands
+LEFT = 0
+RIGHT = 1
+UP = 2
+DOWN = 3
+SPACE = 4
+W = 5
+keys = [False, False, False, False, False, False] #Holds keys
+mapNum = 1
+map = [[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,2,2,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,2],
+       [2,2,2,2,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,2,2,2,2,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,2,2,2,2,2,2,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,2],
+       [2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]]
+
+map2 = [[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,2,1,2,1,2,1,2,1,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,2,2,2,2,2,2,2,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,2],
+       [2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8],
+       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]]
+
+map3 = [[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+       [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,2,1,2,1,2,1,2,1,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,2,2,2,2,2,2,2,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,2],
+       [2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]]
+
+brick = pygame.image.load('brick.jpeg')
+dirt = pygame.image.load('dirt.jpeg')
+emerald = pygame.image.load('emerald.jpeg')
+duck = pygame.image.load('duck.jpeg')
+duckj = pygame.image.load('duck2.jpeg')
+while not gameover:#Game loop-----------------------------
+    clock.tick(60)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            gameover = True
+
+        #keeps track of mouse position
+        if event.type == pygame.MOUSEMOTION:
+            mousePos = event.pos
+        #keeps track of mouse button
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouseDown = True
+        if event.type == pygame.MOUSEBUTTONUP:
+            mouseDown = False
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                keys[LEFT] = True
+            elif event.key == pygame.K_RIGHT:
+                keys[RIGHT] = True
+            elif event.key == pygame.K_UP:
+                keys[UP] = True
+            elif event.key == pygame.K_DOWN:
+                keys[DOWN] = True
+            elif event.key == pygame.K_SPACE:
+                keys[SPACE] = True
+            elif event.key == pygame.K_q:
+                quitGame = True
+            
+
+               
+
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                keys[LEFT] = False
+            elif event.key == pygame.K_RIGHT:
+                keys[RIGHT] = False
+            elif event.key == pygame.K_UP:
+                keys[UP] = False
+            elif event.key == pygame.K_DOWN:
+                keys[DOWN] = False
+            elif event.key == pygame.K_SPACE:
+                keys[SPACE] = False
+            elif event.key == pygame.K_q:
+                quitGame = False
+
+
+            
+
+                
+
+    #PHYSICS------------------------------------------------
+   # p1.move(keys, map)
+    f1.move()
+    if state == 2:
+        p1.move(keys, map)
+
+    elif state ==3:
+        p1.move(keys, map2)
+    #print(mousePos)
+
+    #warp from map 1 to 2
+    if state == 3 and map2[int((p1.ypos) / 50)][int((p1.xpos - 1) / 50)] == 8:
+        #mapNum = 2
+        state = 3
+        p1.xpos = 100
+
+    if keys[SPACE]==True:
+        f1.shoot(p1.xpos, p1.ypos, p1.direction)
+
+    #state 1: menu state!------------------------------
+    if state == 1 and mousePos[0]>100 and mousePos[0]<300 and mousePos[1]>400 and mousePos[1]<550:
+        button1 = True
+    else:
+        button1 = False
+
+    if state == 1 and mousePos[0]>350 and mousePos[0]<550 and mousePos[1]>400 and mousePos[1]<550:
+        button2 = True
+    else:
+        button2 = False
+
+    if state == 1 and button1 == True and mouseDown == True:
+        state = 2
+    if state == 1 and button2 == True and mouseDown == True:
+        state = 3
+    #state 2: playing state!---------------------------
+    if state == 2 and quitGame == True: #pressing quit takes you back to menu
+        state = 1
+    
+    if state == 3 and quitGame == True:
+        state = 1
+  
+        
+
+    #RENDER-------------------------------------------------
+    
+    screen.fill((0,0,0))
+    if f1.isAlive == True:
+            f1.draw(screen)
+
+    #menu state-------------------------------
+    if state == 1:
+        if button1 == False:
+            pygame.draw.rect(screen, (100, 230, 100), (100, 400, 200, 150))
+        else:
+            pygame.draw.rect(screen, (200, 250, 200), (100, 400, 200, 150))
+
+        if button2 == False:
+            pygame.draw.rect(screen, (100, 230, 100), (350, 400, 200, 150))
+        else:
+            pygame.draw.rect(screen, (200, 250, 200), (350, 400, 200, 150))
+
+    #state 2: the map state--------------
+    if state == 2:
+
+        for i in range(20):
+            for j in range(20):
+                if map[i][j] == 1:
+                    screen.blit(dirt, (j * 50, i * 50), (0, 0, 50, 50))
+                if map[i][j] == 2:
+                    screen.blit(brick, (j * 50, i * 50), (0, 0, 50, 50))
+                if map[i][j] == 3:
+                    screen.blit(emerald, (j * 50, i * 50), (0, 0, 50, 50))
+        p1.draw(screen)
+        if f1.isAlive==True:
+            f1.draw(screen)
+
+    if state == 3:
+        
+        for i in range(20):
+            for j in range(20):
+                if map2[i][j] == 1:
+                    screen.blit(duck, (j * 50, i * 50), (0, 0, 50, 50))
+                if map2[i][j] == 2:
+                    screen.blit(duckj, (j * 50, i * 50), (0, 0, 50, 50))
+                if map2[i][j] == 3:
+                    screen.blit(emerald, (j * 50, i * 50), (0, 0, 50, 50))
+        p1.draw(screen)
+        if f1.isAlive==True:
+            f1.draw(screen)
+    
+    if state == 4:
+
+        for i in range(20):
+            for j in range(20):
+                if map2[i][j] == 1:
+                    screen.blit(duck, (j * 50, i * 50), (0, 0, 50, 50))
+                if map2[i][j] == 2:
+                    screen.blit(duckj, (j * 50, i * 50), (0, 0, 50, 50))
+                if map2[i][j] == 3:
+                    screen.blit(emerald, (j * 50, i * 50), (0, 0, 50, 50))
+        p1.draw(screen)
+        if f1.isAlive==True:
+            f1.draw(screen)
+            
+    pygame.display.flip()#pixels on screen
+
+pygame.quit() #Dead loop
